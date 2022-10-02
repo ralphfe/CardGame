@@ -122,7 +122,7 @@ namespace CardGame.API.Controllers
         }
 
         /// <summary>
-        /// Plays a simulated game round for the specified game.
+        /// Plays a simulated game round.
         /// </summary>
         /// <param name="id">The game id to simulate round for.</param>
         /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
