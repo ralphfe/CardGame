@@ -222,10 +222,11 @@ namespace CardGame.API.Controllers
         {
             var res = this.MapPlayerGameCardValues(gameRoundInfos);
             var cardResultsList = cardsResults!.ToList();
+            var gameRoundInfoList = gameRoundInfos!.ToList();
 
             for (int i = 0; i < res.Count(); i++)
             {
-                var match = cardResultsList.ElementAtOrDefault(i)?.Value!.Contains(cardResultsList[i].Value!) ?? false;
+                var match = cardResultsList.ElementAtOrDefault(i)?.Value!.Contains(gameRoundInfoList[i].CardValue!) ?? false;
 
                 if (match)
                 {
