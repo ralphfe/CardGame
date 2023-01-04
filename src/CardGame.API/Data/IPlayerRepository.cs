@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace CardGame.API.DbContext
+namespace CardGame.API.Data
 {
     using CardGame.API.Models.Database;
 
@@ -14,14 +14,14 @@ namespace CardGame.API.DbContext
         /// <summary>
         /// Gets all created players.
         /// </summary>
-        /// <returns>The colletion of players.</returns>
+        /// <returns>The collection of players.</returns>
         public Task<IEnumerable<Player>> GetPlayers();
 
         /// <summary>
         /// Creates a new player with name.
         /// </summary>
         /// <param name="name">The player name.</param>
-        /// <returns>The created palyer model.</returns>
+        /// <returns>The created player model.</returns>
         public Task<Player> CreatePlayer(string name);
     }
 }

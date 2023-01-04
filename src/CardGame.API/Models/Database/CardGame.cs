@@ -20,7 +20,7 @@ namespace CardGame.API.Models.Database
         public int GameId { get; set; }
 
         /// <summary>
-        /// Gets or sets the deck id assosiated with https://deckofcardsapi.com/ service.
+        /// Gets or sets the deck id associated with https://deckofcardsapi.com/ service.
         /// </summary>
         public string? DeckId { get; set; }
 
@@ -30,7 +30,7 @@ namespace CardGame.API.Models.Database
         public bool HasWinner { get; set; }
 
         /// <summary>
-        /// Gets or sets successfuly played rounds value.
+        /// Gets or sets successfully played rounds value.
         /// </summary>
         public int RoundsPlayed { get; set; }
 

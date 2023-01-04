@@ -7,7 +7,7 @@ namespace CardGame.API.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using Asp.Versioning;
-    using CardGame.API.DbContext;
+    using CardGame.API.Data;
     using CardGame.API.Models;
     using CardGame.API.Models.Database;
     using CardGame.API.Models.Serialization;
@@ -98,19 +98,16 @@ namespace CardGame.API.Controllers
         {
             try
             {
-                if (playerNames == null)
-                {
-                    return this.BadRequest($"{nameof(playerNames)} are null");
-                }
+                var playerNameList = playerNames.ToList();
 
-                if (playerNames.Count() < 2)
+                if (playerNameList.Count < 2)
                 {
-                    return this.BadRequest($"{nameof(playerNames)} count is less than required 2 players ({playerNames.Count()})");
+                    return this.BadRequest($"{nameof(playerNames)} count is less than required 2 players ({playerNameList.Count})");
                 }
 
                 // Todo: validate if players exist
                 var deckId = await this.RequestDeckIdFromExternalApi();
-                var game = await this.gameRepository.CreateNewGame(playerNames, deckId);
+                var game = await this.gameRepository.CreateNewGame(playerNameList, deckId);
 
                 return new GameStatistics(game);
             }
@@ -220,11 +217,12 @@ namespace CardGame.API.Controllers
 
         private bool CheckGameHasWinner(IEnumerable<CardResult> cardsResults, IEnumerable<PlayerRoundInfo> gameRoundInfos)
         {
-            var res = this.MapPlayerGameCardValues(gameRoundInfos);
-            var cardResultsList = cardsResults!.ToList();
-            var gameRoundInfoList = gameRoundInfos!.ToList();
+            var gameRoundInfosList = gameRoundInfos.ToList();
+            var res = this.MapPlayerGameCardValues(gameRoundInfosList);
+            var cardResultsList = cardsResults.ToList();
+            var gameRoundInfoList = gameRoundInfosList.ToList();
 
-            for (int i = 0; i < res.Count(); i++)
+            for (var i = 0; i < res.Count; i++)
             {
                 var match = cardResultsList.ElementAtOrDefault(i)?.Value!.Contains(gameRoundInfoList[i].CardValue!) ?? false;
 
@@ -242,11 +240,6 @@ namespace CardGame.API.Controllers
             return gameRoundInfo
                 .GroupBy(k => k.Player!)
                 .ToDictionary(x => x.Key, x => x.Select(y => y.CardValue!));
-        }
-
-        private bool CheckDuplicates(IEnumerable<string> elements)
-        {
-            return elements.Count() != elements.Distinct().Count();
         }
     }
 }

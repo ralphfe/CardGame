@@ -5,10 +5,10 @@
 namespace CardGame.API
 {
     using Asp.Versioning;
-    using CardGame.API.DbContext;
+    using CardGame.API.Data;
 
     /// <summary>
-    /// The programm class containing main entry point.
+    /// The program class containing main entry point.
     /// </summary>
     internal class Program
     {
