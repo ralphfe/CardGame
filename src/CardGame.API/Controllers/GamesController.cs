@@ -22,14 +22,17 @@ namespace CardGame.API.Controllers
     public class GamesController : ControllerBase
     {
         private readonly IGameRepository gameRepository;
+        private readonly CardGameLogic cardGameLogic;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GamesController"/> class.
         /// </summary>
         /// <param name="gameRepository">The game repository.</param>
-        public GamesController(IGameRepository gameRepository)
+        /// <param name="cardGameLogic">The card game logic service.</param>
+        public GamesController(IGameRepository gameRepository, CardGameLogic cardGameLogic)
         {
             this.gameRepository = gameRepository;
+            this.cardGameLogic = cardGameLogic;
         }
 
         /// <summary>
@@ -123,7 +126,7 @@ namespace CardGame.API.Controllers
 
             if (drawCardsResult.Success)
             {
-                var hasWinner = this.CheckGameHasWinner(drawCardsResult.Cards!, game.PlayerRoundInfos!);
+                var hasWinner = this.cardGameLogic.CheckGameHasWinner(drawCardsResult.Cards!, game.PlayerRoundInfos!);
                 game = await this.gameRepository.UpdateRoundInformation(game.GameId, hasWinner, drawCardsResult.Cards!);
             }
 
@@ -178,33 +181,6 @@ namespace CardGame.API.Controllers
             }
 
             return result;
-        }
-
-        private bool CheckGameHasWinner(IEnumerable<CardResult> cardsResults, IEnumerable<PlayerRoundInfo> gameRoundInfos)
-        {
-            var gameRoundInfosList = gameRoundInfos.ToList();
-            var res = this.MapPlayerGameCardValues(gameRoundInfosList);
-            var cardResultsList = cardsResults.ToList();
-            var gameRoundInfoList = gameRoundInfosList.ToList();
-
-            for (var i = 0; i < res.Count; i++)
-            {
-                var match = cardResultsList.ElementAtOrDefault(i)?.Value!.Contains(gameRoundInfoList[i].CardValue!) ?? false;
-
-                if (match)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private IDictionary<Player, IEnumerable<string>> MapPlayerGameCardValues(IEnumerable<PlayerRoundInfo> gameRoundInfo)
-        {
-            return gameRoundInfo
-                .GroupBy(k => k.Player!)
-                .ToDictionary(x => x.Key, x => x.Select(y => y.CardValue!));
         }
     }
 }

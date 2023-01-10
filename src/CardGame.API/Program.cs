@@ -20,6 +20,7 @@ namespace CardGame.API
             builder.Services.AddScoped<IGameRepository, GameRepository>();
             builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
             builder.Services.AddSingleton<ILoggerFactory, LoggerFactory>();
+            builder.Services.AddSingleton<CardGameLogic>();
             builder.Services.AddControllers();
             builder.Services.AddApiVersioning(options =>
             {
@@ -38,20 +39,19 @@ namespace CardGame.API
                 setup.IncludeXmlComments(filePath);
             });
 
+            // Register services for logging service
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
+            app.UseSwagger();
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
                 app.UseSwaggerUI();
                 app.UseDeveloperExceptionPage();
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
             app.MapControllers();
 
             await app.RunAsync();
