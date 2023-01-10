@@ -22,17 +22,14 @@ namespace CardGame.API.Controllers
     public class GamesController : ControllerBase
     {
         private readonly IGameRepository gameRepository;
-        private readonly ILogger logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GamesController"/> class.
         /// </summary>
         /// <param name="gameRepository">The game repository.</param>
-        /// <param name="loggerFactory">The logger factory.</param>
-        public GamesController(IGameRepository gameRepository, ILoggerFactory loggerFactory)
+        public GamesController(IGameRepository gameRepository)
         {
             this.gameRepository = gameRepository;
-            this.logger = loggerFactory.CreateLogger<GamesController>();
         }
 
         /// <summary>
@@ -43,17 +40,9 @@ namespace CardGame.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GameStatistics))]
         public async Task<ActionResult<IEnumerable<GameStatistics>>> GetGames()
         {
-            try
-            {
-                var allGames = await this.gameRepository.GetGames();
-                var games = allGames.Select(x => new GameStatistics(x));
-                return this.Ok(games);
-            }
-            catch (Exception e)
-            {
-                this.logger.LogError(default(EventId), e, $"An exception was caught while processing request '{nameof(this.GetGames)}'");
-                throw;
-            }
+            var allGames = await this.gameRepository.GetGames();
+            var games = allGames.Select(x => new GameStatistics(x));
+            return this.Ok(games);
         }
 
         /// <summary>
@@ -67,22 +56,14 @@ namespace CardGame.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GameStatistics>> GetGameById(int id)
         {
-            try
+            var games = await this.gameRepository.GetGames();
+            var matchingGame = games.FirstOrDefault(x => x.GameId == id);
+            if (matchingGame == null)
             {
-                var games = await this.gameRepository.GetGames();
-                var matchingGame = games.FirstOrDefault(x => x.GameId == id);
-                if (matchingGame == null)
-                {
-                    return this.NotFound(new ProblemDetails() { Detail = $"Could not find matching game with id '{id}'" });
-                }
+                return this.NotFound(new ProblemDetails() { Detail = $"Could not find matching game with id '{id}'" });
+            }
 
-                return new GameStatistics(matchingGame);
-            }
-            catch (Exception e)
-            {
-                this.logger.LogError(default(EventId), e, $"An exception was caught while processing request '{nameof(this.PlayRound)}'");
-                throw;
-            }
+            return new GameStatistics(matchingGame);
         }
 
         /// <summary>
@@ -96,26 +77,18 @@ namespace CardGame.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GameStatistics>> CreateGame([FromBody] IEnumerable<string> playerNames)
         {
-            try
+            var playerNameList = playerNames.ToList();
+
+            if (playerNameList.Count < 2)
             {
-                var playerNameList = playerNames.ToList();
-
-                if (playerNameList.Count < 2)
-                {
-                    return this.BadRequest($"{nameof(playerNames)} count is less than required 2 players ({playerNameList.Count})");
-                }
-
-                // Todo: validate if players exist
-                var deckId = await this.RequestDeckIdFromExternalApi();
-                var game = await this.gameRepository.CreateNewGame(playerNameList, deckId);
-
-                return new GameStatistics(game);
+                return this.BadRequest($"{nameof(playerNames)} count is less than required 2 players ({playerNameList.Count})");
             }
-            catch (Exception e)
-            {
-                this.logger.LogError(default(EventId), e, $"An exception was caught while processing request '{nameof(this.PlayRound)}'");
-                throw;
-            }
+
+            // Todo: validate if players exist
+            var deckId = await this.RequestDeckIdFromExternalApi();
+            var game = await this.gameRepository.CreateNewGame(playerNameList, deckId);
+
+            return new GameStatistics(game);
         }
 
         /// <summary>
@@ -129,27 +102,19 @@ namespace CardGame.API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<GameStatistics>> PlayRound(int id)
         {
-            try
+            var game = await this.gameRepository.GetGameById(id);
+            if (game == null)
             {
-                var game = await this.gameRepository.GetGameById(id);
-                if (game == null)
-                {
-                    return this.BadRequest($"The game with id '{id}' does not exist");
-                }
-
-                // If game has a winner just return the result.
-                if (game.HasWinner)
-                {
-                    return new GameStatistics(game);
-                }
-
-                return await this.SimulateGameRound(game);
+                return this.BadRequest($"The game with id '{id}' does not exist");
             }
-            catch (Exception e)
+
+            // If game has a winner just return the result.
+            if (game.HasWinner)
             {
-                this.logger.LogError(default(EventId), e, $"An exception was caught while processing request '{nameof(this.PlayRound)}'");
-                throw;
+                return new GameStatistics(game);
             }
+
+            return await this.SimulateGameRound(game);
         }
 
         private async Task<GameStatistics> SimulateGameRound(CardGame game)

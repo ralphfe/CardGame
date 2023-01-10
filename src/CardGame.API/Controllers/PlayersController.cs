@@ -7,7 +7,6 @@ namespace CardGame.API.Controllers
     using System.Linq;
     using Asp.Versioning;
     using CardGame.API.Data;
-    using CardGame.API.Models;
     using CardGame.API.Models.Database;
     using Microsoft.AspNetCore.Mvc;
 
@@ -20,17 +19,14 @@ namespace CardGame.API.Controllers
     public class PlayersController : ControllerBase
     {
         private readonly IPlayerRepository playerRepository;
-        private readonly ILogger logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayersController"/> class.
         /// </summary>
         /// <param name="playerRepository">The player repository.</param>
-        /// <param name="loggerFactory">The logger factory.</param>
-        public PlayersController(IPlayerRepository playerRepository, ILoggerFactory loggerFactory)
+        public PlayersController(IPlayerRepository playerRepository)
         {
             this.playerRepository = playerRepository;
-            this.logger = loggerFactory.CreateLogger<GamesController>();
         }
 
         /// <summary>
@@ -42,22 +38,15 @@ namespace CardGame.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult<IEnumerable<string>>> GetPlayers()
         {
-            try
-            {
-                var res = await this.playerRepository.GetPlayers();
+            var res = await this.playerRepository.GetPlayers();
+            var players = res.ToList();
 
-                if (res is not null)
-                {
-                    return this.GetAllPlayerNames(res).ToList();
-                }
-
-                return this.NoContent();
-            }
-            catch (Exception e)
+            if (players.Count > 0)
             {
-                this.logger.LogError(default(EventId), e, $"An exception was caught while processing request '{nameof(this.GetPlayers)}'");
-                throw;
+                return this.GetAllPlayerNames(players).ToList();
             }
+
+            return this.NoContent();
         }
 
         /// <summary>
@@ -66,49 +55,35 @@ namespace CardGame.API.Controllers
         /// <param name="name">The name of the player to create.</param>
         /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
         [HttpPost("{name}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GameStatistics))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(object))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<string>> CreatePlayer(string name)
         {
-            try
+            var players = await this.playerRepository.GetPlayers();
+            if (this.CheckPlayerNameExists(name, players))
             {
-                var players = await this.playerRepository.GetPlayers();
-                if (this.CheckPlayerNameExists(name, players))
-                {
-                    return this.BadRequest($"Player name '{name}' already taken");
-                }
-
-                var nameResult = await this.AddPlayerToRepository(name);
-                if (nameResult != null)
-                {
-                    return nameResult;
-                }
-
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Failed to create player.");
+                return this.BadRequest($"Player name '{name}' already taken");
             }
-            catch (Exception e)
+
+            var nameResult = await this.AddPlayerToRepository(name);
+            if (nameResult != null)
             {
-                this.logger.LogError(default(EventId), e, $"An exception was caught while processing request '{nameof(this.CreatePlayer)}'");
-                throw;
+                return nameResult;
             }
+
+            return this.StatusCode(StatusCodes.Status500InternalServerError, "Failed to create player.");
         }
 
         private async Task<string?> AddPlayerToRepository(string name)
         {
             var res = await this.playerRepository.CreatePlayer(name);
-
-            if (res != null)
-            {
-                return res.Name;
-            }
-
-            return null;
+            return res?.Name;
         }
 
         private bool CheckPlayerNameExists(string name, IEnumerable<Player> players)
         {
-            return players.Where(x => x.Name == name).Any();
+            return players.Any(x => x.Name == name);
         }
 
         private IEnumerable<string> GetAllPlayerNames(IEnumerable<Player> res)
