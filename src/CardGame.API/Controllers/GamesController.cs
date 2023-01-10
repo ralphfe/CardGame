@@ -112,7 +112,7 @@ namespace CardGame.API.Controllers
             }
 
             // If game has a winner just return the result.
-            if (game.HasWinner)
+            if (this.cardGameLogic.CheckGameHasWinner(game))
             {
                 return new GameStatistics(game);
             }
@@ -122,12 +122,16 @@ namespace CardGame.API.Controllers
 
         private async Task<GameStatistics> SimulateGameRound(CardGame game)
         {
-            var drawCardsResult = await this.RequestCardsFromExternalApi(game.DeckId!, game.Players!.Count());
+            var drawCardsResult = await this.RequestCardsFromExternalApi(game.DeckId!, game.Players!.Count);
 
             if (drawCardsResult.Success)
             {
-                var hasWinner = this.cardGameLogic.CheckGameHasWinner(drawCardsResult.Cards!, game.PlayerRoundInfos!);
-                game = await this.gameRepository.UpdateRoundInformation(game.GameId, hasWinner, drawCardsResult.Cards!);
+                game = await this.gameRepository.UpdateRoundInformation(game.GameId, drawCardsResult.Cards!);
+
+                if (this.cardGameLogic.CheckGameHasWinner(game))
+                {
+                    game = await this.gameRepository.UpdateRoundInformation(game.GameId, hasWinner: true);
+                }
             }
 
             return new GameStatistics(game);

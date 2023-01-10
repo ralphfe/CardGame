@@ -50,7 +50,7 @@ namespace CardGame.API.Data
         }
 
         /// <inheritdoc/>
-        public async Task<CardGame> UpdateRoundInformation(int gameId, bool hasWinner, IEnumerable<CardResult> cardResults)
+        public async Task<CardGame> UpdateRoundInformation(int gameId, IEnumerable<CardResult> cardResults)
         {
             await using var context = new ApiContext();
             var cardGame = await context.CardGames!
@@ -60,7 +60,7 @@ namespace CardGame.API.Data
                 .Include(x => x.PlayerRoundInfos!)
                 .FirstOrDefaultAsync(x => x.GameId == gameId);
             var players = cardGame?.Players!.ToList();
-            var cards = cardResults.ToList();
+            var cards = cardResults?.ToList();
 
             for (var i = 0; i < players?.Count(); i++)
             {
@@ -73,8 +73,23 @@ namespace CardGame.API.Data
                 cardGame!.PlayerRoundInfos!.Add(info);
             }
 
-            cardGame!.HasWinner = hasWinner;
-            cardGame.RoundsPlayed++;
+            cardGame!.RoundsPlayed++;
+            await context.SaveChangesAsync();
+            return cardGame;
+        }
+
+        /// <inheritdoc/>
+        public async Task<CardGame> UpdateRoundInformation(int gameId, bool hasWinner)
+        {
+            await using var context = new ApiContext();
+            var cardGame = await context.CardGames!
+                .Include(x => x.Players!)
+                .ThenInclude(x => x.PlayerRoundInfos!)
+                .ThenInclude(x => x.Game!)
+                .Include(x => x.PlayerRoundInfos!)
+                .FirstOrDefaultAsync(x => x.GameId == gameId);
+
+            cardGame!.HasWinner = true;
             await context.SaveChangesAsync();
             return cardGame;
         }
