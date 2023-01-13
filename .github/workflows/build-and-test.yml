@@ -23,7 +23,9 @@ jobs:
   build-and-test:
     name: Build and Test .NET
     runs-on: ${{ inputs.runs-on }}
-    working-directory: ${{ inputs.project-folder }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.project-folder }}
 
     steps:
     - uses: actions/checkout@v3

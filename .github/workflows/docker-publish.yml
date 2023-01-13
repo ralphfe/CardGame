@@ -20,7 +20,6 @@ on:
         description: The context path
         type: string
         default: .
-      secrets: inherit
 
 jobs:
   docker-publish:
