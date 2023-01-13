@@ -37,7 +37,6 @@ namespace CardGame.API.Data
         /// Updates existing game with new round information.
         /// </summary>
         /// <param name="gameId">The game id to update.</param>
-        /// <param name="hasWinner">Specify whether the game has winner determined in the round or not.</param>
         /// <param name="cardResults">The card results to build round info from.</param>
         /// <returns>The updated card game model.</returns>
         public Task<CardGame> UpdateRoundInformation(int gameId, IEnumerable<CardResult> cardResults);

@@ -62,13 +62,13 @@ namespace CardGame.API.Data
             var players = cardGame?.Players!.ToList();
             var cards = cardResults?.ToList();
 
-            for (var i = 0; i < players?.Count(); i++)
+            for (var i = 0; i < players?.Count; i++)
             {
                 var player = players[i];
                 var info = new PlayerRoundInfo();
                 info.Player = player;
                 info.Game = cardGame;
-                info.CardValue = cards[i].Value;
+                info.CardValue = cards?[i].Value;
                 player.PlayerRoundInfos!.Add(info);
                 cardGame!.PlayerRoundInfos!.Add(info);
             }
