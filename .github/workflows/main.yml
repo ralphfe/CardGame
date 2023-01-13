@@ -16,6 +16,4 @@ jobs:
     with:
       runs-on: ubuntu-latest
       context-path: ./src
-      secrets:
-        DOCKER_USERNAME: "${{ secrets.DOCKER_USERNAME }}"
-        DOCKER_PASSWORD: "${{ secrets.DOCKER_PASSWORD }}"
+    secrets: inherit
