@@ -16,3 +16,4 @@ jobs:
     with:
       runs-on: ubuntu-latest
       context-path: ./src
+      secrets: inherit

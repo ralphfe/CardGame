@@ -20,6 +20,11 @@ on:
         description: The context path
         type: string
         default: .
+      secrets:
+        DOCKER_USERNAME:
+          required: true
+        DOCKER_PASSWORD:
+          required: true
 
 jobs:
   docker-publish:
