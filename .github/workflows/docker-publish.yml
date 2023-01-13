@@ -21,10 +21,7 @@ on:
         type: string
         default: .
       secrets:
-        DOCKER_USERNAME:
-          required: true
-        DOCKER_PASSWORD:
-          required: true
+        required: true
 
 jobs:
   docker-publish:
