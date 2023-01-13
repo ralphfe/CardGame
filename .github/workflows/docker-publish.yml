@@ -10,15 +10,22 @@
 name: Publish Docker image
 
 on:
-  workflow_run:
-    workflows: [build-and-test]
-    types:
-      - completed
+  workflow_call:
+    inputs:
+      runs-on:
+        description: Platform to execute on
+        type: string
+        default: ubuntu-latest
+      context-path:
+        description: The context path
+        type: string
+        default: .
+      secrets: inherit
 
 jobs:
   docker-publish:
     name: Push Docker image to Docker Hub
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs-on }}
     
     steps:
       - name: Check out the repo
@@ -39,7 +46,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
-          context: ./src
+          context: ${{ inputs.context-path }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
