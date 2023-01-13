@@ -10,7 +10,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  build-and-test:
 
     runs-on: ubuntu-latest
 
@@ -20,9 +20,15 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
+
     - name: Restore dependencies
+      working-directory: ./src
       run: dotnet restore
+
     - name: Build
+      working-directory: ./src
       run: dotnet build --no-restore
+
     - name: Test
+      working-directory: ./src
       run: dotnet test --no-build --verbosity normal
