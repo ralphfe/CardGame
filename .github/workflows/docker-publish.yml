@@ -1,11 +1,4 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
-# GitHub recommends pinning actions to a commit SHA.
-# To get a newer version, you will need to update the SHA.
-# You can also reference a tag or branch, but the action may change without warning.
+# This workflow will build Docker image and publish it to Docker Hub 
 
 name: Build and Publish Docker image
 
@@ -25,6 +18,9 @@ on:
         required: true
       DOCKER_PASSWORD:
         required: true
+      DOCKER_IMAGES_LOCATION:
+        description: The images repository location, e.g. 'my-docker-hub-namespace/my-docker-hub-repository'
+        required: true
 
 jobs:
   docker-publish:
@@ -43,14 +39,17 @@ jobs:
       
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        uses: docker/metadata-action@4.2.0
         with:
-          images: my-docker-hub-namespace/my-docker-hub-repository
+          images: ${{ secrets.DOCKER_IMAGES_LOCATION }}
       
       - name: Build and push Docker image
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: docker/build-push-action@v3.2.0
         with:
           context: ${{ inputs.context-path }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Log out from Docker Hub
+        run: docker logout
