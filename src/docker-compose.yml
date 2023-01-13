@@ -1,0 +1,9 @@
+version: '3.4'
+
+services:
+  webapp:
+    image: card-game-api
+    build:
+        dockerfile: Dockerfile
+    ports:
+      - 8081:80
