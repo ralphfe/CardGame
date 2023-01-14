@@ -10,9 +10,9 @@ jobs:
     with:
       runs-on: ubuntu-latest
       project-folder: ./src
-  docker-publish:
+  docker-publish-ghcr:
     needs: [build-and-test]
-    uses: ./.github/workflows/docker-publish.yml
+    uses: ./.github/workflows/ghcr-publish.yml
     with:
       runs-on: ubuntu-latest
       context-path: ./src
