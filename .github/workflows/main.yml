@@ -6,13 +6,13 @@ on:
 
 jobs:
   build-and-test:
-    uses: ./.github/workflows/reusable/build-and-test.yml
+    uses: ./.github/workflows/build-and-test.yml
     with:
       runs-on: ubuntu-latest
       project-folder: ./src
   docker-publish-ghcr:
     needs: [build-and-test]
-    uses: ./.github/workflows/reusable/ghcr-publish.yml
+    uses: ./.github/workflows/ghcr-publish.yml
     with:
       runs-on: ubuntu-latest
       context-path: ./src
