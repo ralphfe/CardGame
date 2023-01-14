@@ -13,9 +13,6 @@ on:
         description: The context path
         type: string
         default: .
-    secrets:
-      GITHUB_TOKEN:
-        required: true
 
 env:
   REGISTRY: ghcr.io
