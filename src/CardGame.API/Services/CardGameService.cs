@@ -1,15 +1,15 @@
-// <copyright file="CardGameLogic.cs" company="PlaceholderCompany">
+// <copyright file="CardGameService.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace CardGame.API
+namespace CardGame.API.Services
 {
     using CardGame.API.Models.Database;
 
     /// <summary>
-    /// The card game logic.
+    /// The card game service providing game logic.
     /// </summary>
-    public class CardGameLogic
+    public class CardGameService
     {
         /// <summary>
         /// Checks whether the game has a winner or not.

@@ -7,10 +7,11 @@ namespace CardGame.API.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using Asp.Versioning;
-    using CardGame.API.Data;
-    using CardGame.API.Models;
+    using CardGame.API.DbContext;
     using CardGame.API.Models.Database;
+    using CardGame.API.Models.Dto;
     using CardGame.API.Models.Serialization;
+    using CardGame.API.Services;
     using Microsoft.AspNetCore.Mvc;
 
     /// <summary>
@@ -22,17 +23,17 @@ namespace CardGame.API.Controllers
     public class GamesController : ControllerBase
     {
         private readonly IGameRepository gameRepository;
-        private readonly CardGameLogic cardGameLogic;
+        private readonly CardGameService cardGameService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GamesController"/> class.
         /// </summary>
         /// <param name="gameRepository">The game repository.</param>
-        /// <param name="cardGameLogic">The card game logic service.</param>
-        public GamesController(IGameRepository gameRepository, CardGameLogic cardGameLogic)
+        /// <param name="cardGameService">The card game logic service.</param>
+        public GamesController(IGameRepository gameRepository, CardGameService cardGameService)
         {
             this.gameRepository = gameRepository;
-            this.cardGameLogic = cardGameLogic;
+            this.cardGameService = cardGameService;
         }
 
         /// <summary>
@@ -112,7 +113,7 @@ namespace CardGame.API.Controllers
             }
 
             // If game has a winner just return the result.
-            if (this.cardGameLogic.CheckGameHasWinner(game))
+            if (this.cardGameService.CheckGameHasWinner(game))
             {
                 return new GameStatistics(game);
             }
@@ -128,7 +129,7 @@ namespace CardGame.API.Controllers
             {
                 game = await this.gameRepository.UpdateRoundInformation(game.GameId, drawCardsResult.Cards!);
 
-                if (this.cardGameLogic.CheckGameHasWinner(game))
+                if (this.cardGameService.CheckGameHasWinner(game))
                 {
                     game = await this.gameRepository.UpdateRoundInformation(game.GameId, hasWinner: true);
                 }

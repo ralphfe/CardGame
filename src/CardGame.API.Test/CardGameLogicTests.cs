@@ -1,10 +1,11 @@
 namespace CardGame.API.Test;
 
 using Models.Database;
+using Services;
 
 public class CardGameLogicTests
 {
-    private readonly CardGameLogic logicService = new();
+    private readonly CardGameService serviceService = new();
 
     /// <summary>
     /// Assume 2 players play total of 3 rounds, last round 1st player wins
@@ -15,7 +16,7 @@ public class CardGameLogicTests
         // Arrange
         var player1 = new Player { PlayerId = 1 };
         var player2 = new Player { PlayerId = 2 };
-        
+
         var game = new CardGame();
         game.PlayerRoundInfos = new List<PlayerRoundInfo>()
         {
@@ -28,12 +29,12 @@ public class CardGameLogicTests
         };
 
         // Act
-        var result = this.logicService.CheckGameHasWinner(game);
+        var result = this.serviceService.CheckGameHasWinner(game);
 
         // Assert
         Assert.True(result, "A game should have a winner");
     }
-    
+
     /// <summary>
     /// Assume 2 players play total of 2 rounds, last round 2nd player wins
     /// </summary>
@@ -43,7 +44,7 @@ public class CardGameLogicTests
         // Arrange
         var player1 = new Player { PlayerId = 1 };
         var player2 = new Player { PlayerId = 2 };
-        
+
         var game = new CardGame();
         game.PlayerRoundInfos = new List<PlayerRoundInfo>()
         {
@@ -54,12 +55,12 @@ public class CardGameLogicTests
         };
 
         // Act
-        var result = this.logicService.CheckGameHasWinner(game);
+        var result = this.serviceService.CheckGameHasWinner(game);
 
         // Assert
         Assert.True(result, "A game should have a winner");
     }
-    
+
     /// <summary>
     /// Assume 3 players play total of 2 rounds, last round 3rd player wins
     /// </summary>
@@ -70,7 +71,7 @@ public class CardGameLogicTests
         var player1 = new Player { PlayerId = 1 };
         var player2 = new Player { PlayerId = 2 };
         var player3 = new Player { PlayerId = 3 };
-        
+
         var game = new CardGame();
         game.PlayerRoundInfos = new List<PlayerRoundInfo>()
         {
@@ -83,12 +84,12 @@ public class CardGameLogicTests
         };
 
         // Act
-        var result = this.logicService.CheckGameHasWinner(game);
+        var result = this.serviceService.CheckGameHasWinner(game);
 
         // Assert
         Assert.True(result, "A game should have a winner");
     }
-    
+
     /// <summary>
     /// Assume 3 players play total of 3 rounds, none of the players have won
     /// </summary>
@@ -99,7 +100,7 @@ public class CardGameLogicTests
         var player1 = new Player { PlayerId = 1 };
         var player2 = new Player { PlayerId = 2 };
         var player3 = new Player { PlayerId = 3 };
-        
+
         var game = new CardGame();
         game.PlayerRoundInfos = new List<PlayerRoundInfo>()
         {
@@ -112,7 +113,7 @@ public class CardGameLogicTests
         };
 
         // Act
-        var result = this.logicService.CheckGameHasWinner(game);
+        var result = this.serviceService.CheckGameHasWinner(game);
 
         // Assert
         Assert.False(result, "A game should have no winners");

@@ -5,7 +5,8 @@
 namespace CardGame.API
 {
     using Asp.Versioning;
-    using CardGame.API.Data;
+    using CardGame.API.DbContext;
+    using CardGame.API.Services;
 
     /// <summary>
     /// The program class containing main entry point.
@@ -20,7 +21,7 @@ namespace CardGame.API
             builder.Services.AddScoped<IGameRepository, GameRepository>();
             builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
             builder.Services.AddSingleton<ILoggerFactory, LoggerFactory>();
-            builder.Services.AddSingleton<CardGameLogic>();
+            builder.Services.AddSingleton<CardGameService>();
             builder.Services.AddControllers();
             builder.Services.AddApiVersioning(options =>
             {

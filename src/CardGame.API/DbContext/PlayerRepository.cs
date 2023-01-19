@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace CardGame.API.Data
+namespace CardGame.API.DbContext
 {
     using CardGame.API.Models.Database;
 

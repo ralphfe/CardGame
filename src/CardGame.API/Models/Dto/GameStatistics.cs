@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace CardGame.API.Models
+namespace CardGame.API.Models.Dto
 {
     /// <summary>
     /// A model describing current game information (statistics).
