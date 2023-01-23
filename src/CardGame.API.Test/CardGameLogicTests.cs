@@ -5,7 +5,7 @@ using Services;
 
 public class CardGameLogicTests
 {
-    private readonly CardGameService serviceService = new();
+    private readonly CardGameService gameService = new();
 
     /// <summary>
     /// Assume 2 players play total of 3 rounds, last round 1st player wins
@@ -29,7 +29,7 @@ public class CardGameLogicTests
         };
 
         // Act
-        var result = this.serviceService.CheckGameHasWinner(game);
+        var result = this.gameService.CheckGameHasWinner(game);
 
         // Assert
         Assert.True(result, "A game should have a winner");
@@ -55,7 +55,7 @@ public class CardGameLogicTests
         };
 
         // Act
-        var result = this.serviceService.CheckGameHasWinner(game);
+        var result = this.gameService.CheckGameHasWinner(game);
 
         // Assert
         Assert.True(result, "A game should have a winner");
@@ -84,7 +84,7 @@ public class CardGameLogicTests
         };
 
         // Act
-        var result = this.serviceService.CheckGameHasWinner(game);
+        var result = this.gameService.CheckGameHasWinner(game);
 
         // Assert
         Assert.True(result, "A game should have a winner");
@@ -113,7 +113,7 @@ public class CardGameLogicTests
         };
 
         // Act
-        var result = this.serviceService.CheckGameHasWinner(game);
+        var result = this.gameService.CheckGameHasWinner(game);
 
         // Assert
         Assert.False(result, "A game should have no winners");
