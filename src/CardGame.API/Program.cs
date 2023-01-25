@@ -7,6 +7,8 @@ namespace CardGame.API
     using Asp.Versioning;
     using CardGame.API.DbContext;
     using CardGame.API.Services;
+    using Serilog;
+    using Serilog.Sinks.SystemConsole.Themes;
 
     /// <summary>
     /// The program class containing main entry point.
@@ -20,7 +22,15 @@ namespace CardGame.API
             // Add services to the container.
             builder.Services.AddScoped<IGameRepository, GameRepository>();
             builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
-            builder.Services.AddSingleton<ILoggerFactory, LoggerFactory>();
+
+            // Configure logging
+            var logger = new LoggerConfiguration()
+                .WriteTo.Console(theme: AnsiConsoleTheme.Code)
+                .WriteTo.Seq(builder.Configuration["ConnectionStrings:SeqLoggerAddress"])
+                .CreateLogger();
+            builder.Logging.ClearProviders();
+            builder.Logging.AddSerilog(logger);
+
             builder.Services.AddSingleton<CardGameService>();
             builder.Services.AddControllers();
             builder.Services.AddApiVersioning(options =>

@@ -1,9 +1,17 @@
 version: '3.4'
 
 services:
-  webapp:
+  webapi:
     image: card-game-api
     build:
         dockerfile: Dockerfile
     ports:
       - 8081:80
+  seq:
+    image: datalust/seq:latest
+    environment:
+      - ACCEPT_EULA=Y
+      - EQ_FIRSTRUN_ADMINPASSWORDHASH="$PH"
+    ports:
+      - 8082:80
+      - 5341:5341
