@@ -11,19 +11,28 @@ namespace CardGame.API.DbContext
     /// </summary>
     public class PlayerRepository : IPlayerRepository
     {
+        private readonly ApiContext context;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PlayerRepository"/> class.
+        /// </summary>
+        /// <param name="context">The API DB context.</param>
+        public PlayerRepository(ApiContext context)
+        {
+            this.context = context;
+        }
+
         /// <inheritdoc/>
         public Task<IEnumerable<Player>> GetPlayers()
         {
-            using var context = new ApiContext();
-            return Task.FromResult<IEnumerable<Player>>(context.Players!.ToList());
+            return Task.FromResult<IEnumerable<Player>>(this.context.Players!.ToList());
         }
 
         /// <inheritdoc/>
         public async Task<Player> CreatePlayer(string name)
         {
-            await using var context = new ApiContext();
-            var res = await context.Players!.AddAsync(new Player { Name = name });
-            await context.SaveChangesAsync();
+            var res = await this.context.Players!.AddAsync(new Player { Name = name });
+            await this.context.SaveChangesAsync();
             return res.Entity;
         }
     }

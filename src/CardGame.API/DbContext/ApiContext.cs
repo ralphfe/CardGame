@@ -13,6 +13,15 @@ namespace CardGame.API.DbContext
     public class ApiContext : DbContext
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="ApiContext"/> class.
+        /// </summary>
+        /// <param name="options">The db context options.</param>
+        public ApiContext(DbContextOptions<ApiContext> options)
+            : base(options)
+        {
+        }
+
+        /// <summary>
         /// Gets or sets the CardGames database set.
         /// </summary>
         public DbSet<CardGame>? CardGames { get; set; }
@@ -26,12 +35,6 @@ namespace CardGame.API.DbContext
         /// Gets or sets the PlayerRoundInfo database set.
         /// </summary>
         public DbSet<PlayerRoundInfo>? RoundInfo { get; set; }
-
-        /// <inheritdoc/>
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseInMemoryDatabase(databaseName: "CardGameDb");
-        }
 
         /// <inheritdoc/>
         protected override void OnModelCreating(ModelBuilder modelBuilder)

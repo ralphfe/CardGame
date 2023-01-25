@@ -13,11 +13,21 @@ namespace CardGame.API.DbContext
     /// </summary>
     public class GameRepository : IGameRepository
     {
+        private readonly ApiContext context;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameRepository"/> class.
+        /// </summary>
+        /// <param name="context">The API DB context.</param>
+        public GameRepository(ApiContext context)
+        {
+            this.context = context;
+        }
+
         /// <inheritdoc/>
         public async Task<IEnumerable<CardGame>> GetGames()
         {
-            await using var context = new ApiContext();
-            return await context.CardGames!
+            return await this.context.CardGames!
                 .Include(x => x.Players) !
                 .Include(x => x.PlayerRoundInfos) !
                 .ThenInclude(x => x.Game)
@@ -29,7 +39,6 @@ namespace CardGame.API.DbContext
         /// <inheritdoc/>
         public async Task<CardGame?> GetGameById(int gameId)
         {
-            await using var context = new ApiContext();
             var games = await this.GetGames();
             return games.FirstOrDefault(x => x.GameId == gameId);
         }
@@ -37,23 +46,21 @@ namespace CardGame.API.DbContext
         /// <inheritdoc/>
         public async Task<CardGame> CreateNewGame(IEnumerable<string> playerNames, string deckId)
         {
-            await using var context = new ApiContext();
-            var validPlayers = context.Players!.Where(x => playerNames.Contains(x.Name));
+            var validPlayers = this.context.Players!.Where(x => playerNames.Contains(x.Name));
             var cardGame = new CardGame();
             cardGame.PlayerRoundInfos ??= new List<PlayerRoundInfo>();
             cardGame.Players ??= new List<Player>();
             cardGame.Players = validPlayers.ToList();
             cardGame.DeckId = deckId;
-            context.CardGames!.Attach(cardGame);
-            await context.SaveChangesAsync();
+            this.context.CardGames!.Attach(cardGame);
+            await this.context.SaveChangesAsync();
             return cardGame;
         }
 
         /// <inheritdoc/>
         public async Task<CardGame> UpdateRoundInformation(int gameId, IEnumerable<CardResult> cardResults)
         {
-            await using var context = new ApiContext();
-            var cardGame = await context.CardGames!
+            var cardGame = await this.context.CardGames!
                 .Include(x => x.Players!)
                 .ThenInclude(x => x.PlayerRoundInfos!)
                 .ThenInclude(x => x.Game!)
@@ -74,15 +81,14 @@ namespace CardGame.API.DbContext
             }
 
             cardGame!.RoundsPlayed++;
-            await context.SaveChangesAsync();
+            await this.context.SaveChangesAsync();
             return cardGame;
         }
 
         /// <inheritdoc/>
         public async Task<CardGame> UpdateRoundInformation(int gameId, bool hasWinner)
         {
-            await using var context = new ApiContext();
-            var cardGame = await context.CardGames!
+            var cardGame = await this.context.CardGames!
                 .Include(x => x.Players!)
                 .ThenInclude(x => x.PlayerRoundInfos!)
                 .ThenInclude(x => x.Game!)
@@ -90,7 +96,7 @@ namespace CardGame.API.DbContext
                 .FirstOrDefaultAsync(x => x.GameId == gameId);
 
             cardGame!.HasWinner = true;
-            await context.SaveChangesAsync();
+            await this.context.SaveChangesAsync();
             return cardGame;
         }
     }

@@ -7,6 +7,7 @@ namespace CardGame.API
     using Asp.Versioning;
     using CardGame.API.DbContext;
     using CardGame.API.Services;
+    using Microsoft.EntityFrameworkCore;
     using Serilog;
     using Serilog.Sinks.SystemConsole.Themes;
 
@@ -19,10 +20,6 @@ namespace CardGame.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-            builder.Services.AddScoped<IGameRepository, GameRepository>();
-            builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
-
             // Configure logging
             var logger = new LoggerConfiguration()
                 .WriteTo.Console(theme: AnsiConsoleTheme.Code)
@@ -30,6 +27,12 @@ namespace CardGame.API
                 .CreateLogger();
             builder.Logging.ClearProviders();
             builder.Logging.AddSerilog(logger);
+
+            // Add services to the container.
+            builder.Services.AddScoped<IGameRepository, GameRepository>();
+            builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
+            builder.Services.AddDbContext<ApiContext>(
+                opt => opt.UseNpgsql(builder.Configuration["ConnectionStrings:CardGameApiDb"]));
 
             builder.Services.AddSingleton<CardGameService>();
             builder.Services.AddControllers();
