@@ -7,10 +7,10 @@ namespace CardGame.API.Controllers
     using System.Collections.Generic;
     using System.Linq;
     using Asp.Versioning;
-    using CardGame.API.DbContext;
     using CardGame.API.Models.Database;
     using CardGame.API.Models.Dto;
     using CardGame.API.Models.Serialization;
+    using CardGame.API.Persistence.Data;
     using CardGame.API.Services;
     using Microsoft.AspNetCore.Mvc;
 

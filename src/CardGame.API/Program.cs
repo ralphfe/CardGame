@@ -5,7 +5,7 @@
 namespace CardGame.API
 {
     using Asp.Versioning;
-    using CardGame.API.DbContext;
+    using CardGame.API.Persistence.Data;
     using CardGame.API.Services;
 
     /// <summary>

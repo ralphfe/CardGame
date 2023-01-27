@@ -4,9 +4,6 @@
 
 namespace CardGame.API.Models.Database
 {
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
-
     /// <summary>
     /// A database model describing a player round information.
     /// </summary>
@@ -15,14 +12,11 @@ namespace CardGame.API.Models.Database
         /// <summary>
         /// Gets or sets the round info id. Note, the value is a database generated key.
         /// </summary>
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int RoundInfoId { get; set; }
 
         /// <summary>
         /// Gets or sets a card value drawn in the set round.
         /// </summary>
-        [Required]
         public string? CardValue { get; set; }
 
         /// <summary>

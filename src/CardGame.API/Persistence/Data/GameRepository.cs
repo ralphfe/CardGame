@@ -2,10 +2,11 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace CardGame.API.DbContext
+namespace CardGame.API.Persistence.Data
 {
     using CardGame.API.Models.Database;
     using CardGame.API.Models.Serialization;
+    using CardGame.API.Persistence;
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>
