@@ -6,8 +6,8 @@ namespace CardGame.API.Controllers
 {
     using System.Linq;
     using Asp.Versioning;
-    using CardGame.API.DbContext;
     using CardGame.API.Models.Database;
+    using CardGame.API.Persistence.Repositories;
     using Microsoft.AspNetCore.Mvc;
 
     /// <summary>

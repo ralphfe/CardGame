@@ -4,8 +4,9 @@
 
 namespace CardGame.API
 {
+    using System.Text.Json.Serialization;
     using Asp.Versioning;
-    using CardGame.API.DbContext;
+    using CardGame.API.Persistence.Repositories;
     using CardGame.API.Services;
     using Microsoft.EntityFrameworkCore;
     using Serilog;
@@ -35,7 +36,8 @@ namespace CardGame.API
                 opt => opt.UseNpgsql(builder.Configuration["ConnectionStrings:CardGameApiDb"]));
 
             builder.Services.AddSingleton<CardGameService>();
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
             builder.Services.AddApiVersioning(options =>
             {
                 options.ReportApiVersions = true;

@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace CardGame.API.DbContext
+namespace CardGame.API.Persistence
 {
     using CardGame.API.Models.Database;
     using Microsoft.EntityFrameworkCore;
@@ -39,25 +39,7 @@ namespace CardGame.API.DbContext
         /// <inheritdoc/>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<CardGame>()
-                .HasMany(game => game.Players)
-                .WithMany(player => player.CardGames);
-
-            modelBuilder.Entity<CardGame>()
-                .HasMany(game => game.PlayerRoundInfos)
-                .WithOne();
-
-            modelBuilder.Entity<Player>()
-                .HasMany(player => player.PlayerRoundInfos)
-                .WithOne();
-
-            modelBuilder.Entity<PlayerRoundInfo>()
-                .HasOne(roundInfo => roundInfo.Player)
-                .WithMany();
-
-            modelBuilder.Entity<PlayerRoundInfo>()
-                .HasOne(roundInfo => roundInfo.Game)
-                .WithMany();
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApiContext).Assembly);
         }
     }
 }

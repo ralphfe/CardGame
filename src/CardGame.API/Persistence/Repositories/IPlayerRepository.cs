@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace CardGame.API.DbContext
+namespace CardGame.API.Persistence.Repositories
 {
     using CardGame.API.Models.Database;
 

@@ -2,10 +2,11 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace CardGame.API.DbContext
+namespace CardGame.API.Persistence.Repositories
 {
     using CardGame.API.Models.Database;
     using CardGame.API.Models.Serialization;
+    using CardGame.API.Persistence;
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>
@@ -30,9 +31,6 @@ namespace CardGame.API.DbContext
             return await this.context.CardGames!
                 .Include(x => x.Players) !
                 .Include(x => x.PlayerRoundInfos) !
-                .ThenInclude(x => x.Game)
-                .Include(x => x.PlayerRoundInfos) !
-                .ThenInclude(x => x.Player)
                 .ToListAsync();
         }
 
@@ -62,8 +60,6 @@ namespace CardGame.API.DbContext
         {
             var cardGame = await this.context.CardGames!
                 .Include(x => x.Players!)
-                .ThenInclude(x => x.PlayerRoundInfos!)
-                .ThenInclude(x => x.Game!)
                 .Include(x => x.PlayerRoundInfos!)
                 .FirstOrDefaultAsync(x => x.GameId == gameId);
             var players = cardGame?.Players!.ToList();
@@ -90,8 +86,6 @@ namespace CardGame.API.DbContext
         {
             var cardGame = await this.context.CardGames!
                 .Include(x => x.Players!)
-                .ThenInclude(x => x.PlayerRoundInfos!)
-                .ThenInclude(x => x.Game!)
                 .Include(x => x.PlayerRoundInfos!)
                 .FirstOrDefaultAsync(x => x.GameId == gameId);
 
