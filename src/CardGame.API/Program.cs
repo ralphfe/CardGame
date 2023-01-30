@@ -6,7 +6,7 @@ namespace CardGame.API
 {
     using System.Text.Json.Serialization;
     using Asp.Versioning;
-    using CardGame.API.Persistence.Data;
+    using CardGame.API.Persistence.Repositories;
     using CardGame.API.Services;
 
     /// <summary>
