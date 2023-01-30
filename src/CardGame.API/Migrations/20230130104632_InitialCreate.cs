@@ -1,14 +1,10 @@
-﻿// <copyright file="20230125120412_InitialCreate.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace CardGame.API.Migrations
 {
-    using Microsoft.EntityFrameworkCore.Migrations;
-    using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-
     /// <inheritdoc />
     public partial class InitialCreate : Migration
     {
@@ -23,7 +19,7 @@ namespace CardGame.API.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     DeckId = table.Column<string>(type: "text", nullable: true),
                     HasWinner = table.Column<bool>(type: "boolean", nullable: false),
-                    RoundsPlayed = table.Column<int>(type: "integer", nullable: false),
+                    RoundsPlayed = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -36,7 +32,7 @@ namespace CardGame.API.Migrations
                 {
                     PlayerId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -48,7 +44,7 @@ namespace CardGame.API.Migrations
                 columns: table => new
                 {
                     CardGamesGameId = table.Column<int>(type: "integer", nullable: false),
-                    PlayersPlayerId = table.Column<int>(type: "integer", nullable: false),
+                    PlayersPlayerId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -73,46 +69,31 @@ namespace CardGame.API.Migrations
                 {
                     RoundInfoId = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CardValue = table.Column<string>(type: "text", nullable: false),
-                    GameId = table.Column<int>(type: "integer", nullable: true),
-                    PlayerId1 = table.Column<int>(type: "integer", nullable: true),
-                    CardGameGameId = table.Column<int>(type: "integer", nullable: true),
-                    PlayerId = table.Column<int>(type: "integer", nullable: true),
+                    CardValue = table.Column<string>(type: "text", nullable: true),
+                    GameId = table.Column<int>(type: "integer", nullable: false),
+                    PlayerId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RoundInfo", x => x.RoundInfoId);
                     table.ForeignKey(
-                        name: "FK_RoundInfo_CardGames_CardGameGameId",
-                        column: x => x.CardGameGameId,
-                        principalTable: "CardGames",
-                        principalColumn: "GameId");
-                    table.ForeignKey(
                         name: "FK_RoundInfo_CardGames_GameId",
                         column: x => x.GameId,
                         principalTable: "CardGames",
-                        principalColumn: "GameId");
+                        principalColumn: "GameId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_RoundInfo_Players_PlayerId",
                         column: x => x.PlayerId,
                         principalTable: "Players",
-                        principalColumn: "PlayerId");
-                    table.ForeignKey(
-                        name: "FK_RoundInfo_Players_PlayerId1",
-                        column: x => x.PlayerId1,
-                        principalTable: "Players",
-                        principalColumn: "PlayerId");
+                        principalColumn: "PlayerId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_CardGamePlayer_PlayersPlayerId",
                 table: "CardGamePlayer",
                 column: "PlayersPlayerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RoundInfo_CardGameGameId",
-                table: "RoundInfo",
-                column: "CardGameGameId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoundInfo_GameId",
@@ -123,11 +104,6 @@ namespace CardGame.API.Migrations
                 name: "IX_RoundInfo_PlayerId",
                 table: "RoundInfo",
                 column: "PlayerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RoundInfo_PlayerId1",
-                table: "RoundInfo",
-                column: "PlayerId1");
         }
 
         /// <inheritdoc />
