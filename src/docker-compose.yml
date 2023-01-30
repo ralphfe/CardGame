@@ -1,12 +1,10 @@
 version: '3.4'
 
+networks:
+  docker-api-dev:
+    driver: bridge
+
 services:
-  webapi:
-    image: card-game-api
-    build:
-        dockerfile: Dockerfile
-    ports:
-      - 8081:80
   seq:
     image: datalust/seq:latest
     environment:
