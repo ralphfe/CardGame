@@ -4,9 +4,6 @@
 
 namespace CardGame.API.Models.Database
 {
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
-
     /// <summary>
     /// A database model describing a player.
     /// </summary>
@@ -15,8 +12,6 @@ namespace CardGame.API.Models.Database
         /// <summary>
         /// Gets or sets the player id. Note, the value is a database generated key.
         /// </summary>
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int PlayerId { get; set; }
 
         /// <summary>
@@ -27,11 +22,11 @@ namespace CardGame.API.Models.Database
         /// <summary>
         /// Gets or sets the player round information associated with the player.
         /// </summary>
-        public virtual ICollection<PlayerRoundInfo>? PlayerRoundInfos { get; set; }
+        public List<PlayerRoundInfo>? PlayerRoundInfos { get; set; } = new ();
 
         /// <summary>
         /// Gets or sets the card game information associated with the player.
         /// </summary>
-        public virtual ICollection<CardGame>? CardGames { get; set; }
+        public List<CardGame>? CardGames { get; set; } = new ();
     }
 }

@@ -4,8 +4,9 @@
 
 namespace CardGame.API
 {
+    using System.Text.Json.Serialization;
     using Asp.Versioning;
-    using CardGame.API.DbContext;
+    using CardGame.API.Persistence.Repositories;
     using CardGame.API.Services;
     using Serilog;
     using Serilog.Sinks.SystemConsole.Themes;
@@ -32,7 +33,8 @@ namespace CardGame.API
             builder.Logging.AddSerilog(logger);
 
             builder.Services.AddSingleton<CardGameService>();
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
             builder.Services.AddApiVersioning(options =>
             {
                 options.ReportApiVersions = true;
