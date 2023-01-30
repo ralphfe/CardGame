@@ -8,7 +8,7 @@ namespace CardGame.API.Controllers
     using System.Linq;
     using Asp.Versioning;
     using CardGame.API.Models.Database;
-    using CardGame.API.Models.Dto;
+    using CardGame.API.Models.Responses;
     using CardGame.API.Models.Serialization;
     using CardGame.API.Persistence.Repositories;
     using CardGame.API.Services;
@@ -41,11 +41,11 @@ namespace CardGame.API.Controllers
         /// </summary>
         /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GameStatistics))]
-        public async Task<ActionResult<IEnumerable<GameStatistics>>> GetGames()
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GameStatisticsResponse))]
+        public async Task<ActionResult<IEnumerable<GameStatisticsResponse>>> GetGames()
         {
             var allGames = await this.gameRepository.GetGames();
-            var games = allGames.Select(x => new GameStatistics(x));
+            var games = allGames.Select(x => new GameStatisticsResponse(x));
             return this.Ok(games);
         }
 
@@ -55,10 +55,10 @@ namespace CardGame.API.Controllers
         /// <param name="id">The game id.</param>
         /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GameStatistics))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GameStatisticsResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(object))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<GameStatistics>> GetGameById(int id)
+        public async Task<ActionResult<GameStatisticsResponse>> GetGameById(int id)
         {
             var games = await this.gameRepository.GetGames();
             var matchingGame = games.FirstOrDefault(x => x.GameId == id);
@@ -67,7 +67,7 @@ namespace CardGame.API.Controllers
                 return this.NotFound(new ProblemDetails() { Detail = $"Could not find matching game with id '{id}'" });
             }
 
-            return new GameStatistics(matchingGame);
+            return new GameStatisticsResponse(matchingGame);
         }
 
         /// <summary>
@@ -76,10 +76,10 @@ namespace CardGame.API.Controllers
         /// <param name="playerNames">The player names to create a game for. Minimum players 2.</param>
         /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GameStatistics))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GameStatisticsResponse))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(object))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<GameStatistics>> CreateGame([FromBody] IEnumerable<string> playerNames)
+        public async Task<ActionResult<GameStatisticsResponse>> CreateGame([FromBody] IEnumerable<string> playerNames)
         {
             var playerNameList = playerNames.ToList();
 
@@ -92,7 +92,7 @@ namespace CardGame.API.Controllers
             var deckId = await this.RequestDeckIdFromExternalApi();
             var game = await this.gameRepository.CreateNewGame(playerNameList, deckId);
 
-            return new GameStatistics(game);
+            return new GameStatisticsResponse(game);
         }
 
         /// <summary>
@@ -101,10 +101,10 @@ namespace CardGame.API.Controllers
         /// <param name="id">The game id to simulate round for.</param>
         /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
         [HttpPost("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GameStatistics))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GameStatisticsResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(object))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<GameStatistics>> PlayRound(int id)
+        public async Task<ActionResult<GameStatisticsResponse>> PlayRound(int id)
         {
             var game = await this.gameRepository.GetGameById(id);
             if (game == null)
@@ -115,13 +115,13 @@ namespace CardGame.API.Controllers
             // If game has a winner just return the result.
             if (this.cardGameService.CheckGameHasWinner(game))
             {
-                return new GameStatistics(game);
+                return new GameStatisticsResponse(game);
             }
 
             return await this.SimulateGameRound(game);
         }
 
-        private async Task<GameStatistics> SimulateGameRound(CardGame game)
+        private async Task<GameStatisticsResponse> SimulateGameRound(CardGame game)
         {
             var drawCardsResult = await this.RequestCardsFromExternalApi(game.DeckId!, game.Players!.Count);
 
@@ -135,7 +135,7 @@ namespace CardGame.API.Controllers
                 }
             }
 
-            return new GameStatistics(game);
+            return new GameStatisticsResponse(game);
         }
 
         private async Task<string> RequestDeckIdFromExternalApi()

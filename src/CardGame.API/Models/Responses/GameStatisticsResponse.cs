@@ -1,19 +1,19 @@
-﻿// <copyright file="GameStatistics.cs" company="PlaceholderCompany">
+﻿// <copyright file="GameStatisticsResponse.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace CardGame.API.Models.Dto
+namespace CardGame.API.Models.Responses
 {
     /// <summary>
     /// A model describing current game information (statistics).
     /// </summary>
-    public class GameStatistics
+    public class GameStatisticsResponse
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="GameStatistics"/> class.
+        /// Initializes a new instance of the <see cref="GameStatisticsResponse"/> class.
         /// </summary>
         /// <param name="game">The card game data.</param>
-        public GameStatistics(Database.CardGame game)
+        public GameStatisticsResponse(Database.CardGame game)
         {
             this.GameId = game.GameId;
             this.Players = game.Players?.Select(x => x.Name!);
