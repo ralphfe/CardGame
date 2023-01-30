@@ -22,11 +22,11 @@ namespace CardGame.API.Models.Database
         /// <summary>
         /// Gets or sets the player round information associated with the player.
         /// </summary>
-        public virtual ICollection<PlayerRoundInfo>? PlayerRoundInfos { get; set; }
+        public List<PlayerRoundInfo>? PlayerRoundInfos { get; set; } = new ();
 
         /// <summary>
         /// Gets or sets the card game information associated with the player.
         /// </summary>
-        public virtual ICollection<CardGame>? CardGames { get; set; }
+        public List<CardGame>? CardGames { get; set; } = new ();
     }
 }

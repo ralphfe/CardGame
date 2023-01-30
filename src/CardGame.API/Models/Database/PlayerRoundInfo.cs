@@ -22,11 +22,11 @@ namespace CardGame.API.Models.Database
         /// <summary>
         /// Gets or sets a game associated with the round.
         /// </summary>
-        public virtual CardGame? Game { get; set; }
+        public CardGame? Game { get; set; }
 
         /// <summary>
         /// Gets or sets a player associated with the round.
         /// </summary>
-        public virtual Player? Player { get; set; }
+        public Player? Player { get; set; }
     }
 }

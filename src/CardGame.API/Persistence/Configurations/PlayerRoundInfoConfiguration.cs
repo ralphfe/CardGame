@@ -11,20 +11,22 @@ namespace CardGame.API.Persistence.Configurations
     /// <inheritdoc />
     public class PlayerRoundInfoConfiguration : IEntityTypeConfiguration<PlayerRoundInfo>
     {
+        private const string PlayerKeyName = "PlayerId";
+        private const string GameKeyName = "GameId";
+
         /// <inheritdoc />
         public void Configure(EntityTypeBuilder<PlayerRoundInfo> builder)
         {
             builder.HasKey(p => p.RoundInfoId);
+            builder.Property<int>(PlayerKeyName);
+            builder.Property<int>(GameKeyName);
 
             builder.Property(p => p.RoundInfoId)
                 .ValueGeneratedOnAdd()
                 .IsRequired();
 
-            builder.HasOne(roundInfo => roundInfo.Player)
-                .WithMany();
-
-            builder.HasOne(roundInfo => roundInfo.Game)
-                .WithMany();
+            builder.HasOne(roundInfo => roundInfo.Player);
+            builder.HasOne(roundInfo => roundInfo.Game);
         }
     }
 }

@@ -21,9 +21,6 @@ namespace CardGame.API.Persistence.Data
             return await context.CardGames!
                 .Include(x => x.Players) !
                 .Include(x => x.PlayerRoundInfos) !
-                .ThenInclude(x => x.Game)
-                .Include(x => x.PlayerRoundInfos) !
-                .ThenInclude(x => x.Player)
                 .ToListAsync();
         }
 
@@ -56,8 +53,6 @@ namespace CardGame.API.Persistence.Data
             await using var context = new ApiContext();
             var cardGame = await context.CardGames!
                 .Include(x => x.Players!)
-                .ThenInclude(x => x.PlayerRoundInfos!)
-                .ThenInclude(x => x.Game!)
                 .Include(x => x.PlayerRoundInfos!)
                 .FirstOrDefaultAsync(x => x.GameId == gameId);
             var players = cardGame?.Players!.ToList();
@@ -85,8 +80,6 @@ namespace CardGame.API.Persistence.Data
             await using var context = new ApiContext();
             var cardGame = await context.CardGames!
                 .Include(x => x.Players!)
-                .ThenInclude(x => x.PlayerRoundInfos!)
-                .ThenInclude(x => x.Game!)
                 .Include(x => x.PlayerRoundInfos!)
                 .FirstOrDefaultAsync(x => x.GameId == gameId);
 

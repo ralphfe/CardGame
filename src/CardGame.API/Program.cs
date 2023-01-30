@@ -4,6 +4,7 @@
 
 namespace CardGame.API
 {
+    using System.Text.Json.Serialization;
     using Asp.Versioning;
     using CardGame.API.Persistence.Data;
     using CardGame.API.Services;
@@ -22,7 +23,8 @@ namespace CardGame.API
             builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
             builder.Services.AddSingleton<ILoggerFactory, LoggerFactory>();
             builder.Services.AddSingleton<CardGameService>();
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
             builder.Services.AddApiVersioning(options =>
             {
                 options.ReportApiVersions = true;

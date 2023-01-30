@@ -32,11 +32,11 @@ namespace CardGame.API.Models.Database
         /// <summary>
         /// Gets or sets the players associated to the current game.
         /// </summary>
-        public virtual ICollection<Player>? Players { get; set; }
+        public List<Player>? Players { get; set; } = new ();
 
         /// <summary>
         /// Gets or sets the player round information associated to the current game.
         /// </summary>
-        public virtual ICollection<PlayerRoundInfo>? PlayerRoundInfos { get; set; }
+        public List<PlayerRoundInfo>? PlayerRoundInfos { get; set; } = new ();
     }
 }

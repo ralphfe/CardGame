@@ -16,15 +16,12 @@ namespace CardGame.API.Persistence.Configurations
         {
             builder.HasKey(p => p.GameId);
 
+            builder.Navigation(p => p.PlayerRoundInfos);
+            builder.Navigation(p => p.Players);
+
             builder.Property(p => p.GameId)
                 .ValueGeneratedOnAdd()
                 .IsRequired();
-
-            builder.HasMany(game => game.Players)
-                .WithMany(player => player.CardGames);
-
-            builder.HasMany(game => game.PlayerRoundInfos)
-                .WithOne();
         }
     }
 }
