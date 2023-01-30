@@ -11,8 +11,10 @@ services:
       - ACCEPT_EULA=Y
       - EQ_FIRSTRUN_ADMINPASSWORDHASH="$PH"
     ports:
-      - 8082:80
-      - 5341:5341
+      - "8082:80"
+      - "5341:5341"
+    networks:
+      - docker-api-dev
   db:
     image: postgres:14.1-alpine
     restart: always
@@ -20,9 +22,24 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
-      - 5432:5432
+      - "5432:5432"
+    networks:
+      - docker-api-dev
     volumes:
       - postgres-db:/data/postgres
+  webapi:
+    depends_on:
+      - seq
+      - db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "8081:80"
+    networks:
+      - docker-api-dev
+
 volumes:
   postgres-db:
     driver: local
